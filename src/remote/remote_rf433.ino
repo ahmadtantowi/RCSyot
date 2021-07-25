@@ -79,8 +79,11 @@ void loop()
         Serial.println();
 #endif
 
+        bool default_state = _ps2_data.Button == 0x00U && 
+            _ps2_data.Left_X == 0x7B & _ps2_data.Left_Y == 0x7B & 
+            _ps2_data.Right_X == 0x7B & _ps2_data.Right_Y == 0x7B;
         // send PS 2 data via RF433
-        if (_rf_driver.send((uint8_t *)&_ps2_data, sizeof(PS2_DATA))) {
+        if (!default_state & _rf_driver.send((uint8_t *)&_ps2_data, sizeof(PS2_DATA))) {
             _rf_driver.waitPacketSent();
         }
     }
