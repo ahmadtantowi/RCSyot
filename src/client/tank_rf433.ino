@@ -56,7 +56,9 @@ MX1508 _motor_a(MOTOR_A1, MOTOR_A2, FAST_DECAY, PWM_2PIN);
 MX1508 _motor_b(MOTOR_B1, MOTOR_B2, FAST_DECAY, PWM_2PIN);
 
 PS2_DATA *_ps2_data;
-int _dpad_pwm = 127;
+int _current_pwm = 100;
+int _min_pwm = 40;
+int _max_pwm = 1023;
 
 void setup() {
 #ifdef COM_DEBUG
@@ -87,40 +89,41 @@ void loop() {
         Serial.print(_ps2_data->Right_Y, HEX);
         Serial.println();
 #endif
-        
-        int left_analog = map(_ps2_data->Left_Y, 0, 255, 767, -767);
-        int right_analog = map(_ps2_data->Right_Y, 0, 255, 767, -767);
-        
-        // drive with analog
-        if (left_analog == 28) { // analog on center
-            _motor_a.stopMotor();
-        }
-        else {
+
+        // drive left motor with left analog
+        if (_ps2_data->Left_Y != 0x7B) {
+            int left_analog = map(_ps2_data->Left_Y, 0, 255, _current_pwm, -_current_pwm);
             _motor_a.motorGo(left_analog);
         }
-        if (right_analog == 28) { // analog on center
-            _motor_b.stopMotor();
+        else {
+            _motor_a.stopMotor();
+        }
+
+        // drive right motor with right analog
+        if (_ps2_data->Right_Y != 0x7B) {
+            int right_analog = map(_ps2_data->Right_Y, 0, 255, _current_pwm, -_current_pwm);
+            _motor_b.motorGo(right_analog);
         }
         else {
-            _motor_b.motorGo(right_analog);
+            _motor_b.stopMotor();
         }
 
         // drive with dpad
         if (IsPressed(PSB_PAD_UP)) {
-            _motor_a.motorGo(_dpad_pwm);
-            _motor_b.motorGo(_dpad_pwm);
+            _motor_a.motorGo(_current_pwm);
+            _motor_b.motorGo(_current_pwm);
         }
         else if (IsPressed(PSB_PAD_DOWN)) {
-            _motor_a.motorGo(-_dpad_pwm);
-            _motor_b.motorGo(-_dpad_pwm);
+            _motor_a.motorGo(-_current_pwm);
+            _motor_b.motorGo(-_current_pwm);
         }
         else if (IsPressed(PSB_PAD_LEFT)) {
-            _motor_a.motorGo(-_dpad_pwm);
-            _motor_b.motorGo(_dpad_pwm);
+            _motor_a.motorGo(-_current_pwm);
+            _motor_b.motorGo(_current_pwm);
         }
         else if (IsPressed(PSB_PAD_RIGHT)) {
-            _motor_a.motorGo(_dpad_pwm);
-            _motor_b.motorGo(-_dpad_pwm);
+            _motor_a.motorGo(_current_pwm);
+            _motor_b.motorGo(-_current_pwm);
         }
 
         // stop when square pressed
@@ -130,12 +133,12 @@ void loop() {
         }
 
         // increase/decrease pwm speed with L1/R1
-        if (IsPressed(PSB_L1) && _dpad_pwm >= 20) {
-            _dpad_pwm -= 3;
+        if (IsPressed(PSB_L1) && _current_pwm >= _min_pwm) {
+            _current_pwm -= 5;
             tone(BUZZER, 250, 50);
         }
-        if (IsPressed(PSB_R1) && _dpad_pwm <= 767) {
-            _dpad_pwm += 3;
+        if (IsPressed(PSB_R1) && _current_pwm <= _max_pwm) {
+            _current_pwm += 5;
             tone(BUZZER, 500, 50);
         }
     }
