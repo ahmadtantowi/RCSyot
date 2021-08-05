@@ -108,38 +108,41 @@ void loop() {
             _motor_b.stopMotor();
         }
 
-        // drive with dpad
-        if (IsPressed(PSB_PAD_UP)) {
-            _motor_a.motorGo(_current_pwm);
-            _motor_b.motorGo(_current_pwm);
-        }
-        else if (IsPressed(PSB_PAD_DOWN)) {
-            _motor_a.motorGo(-_current_pwm);
-            _motor_b.motorGo(-_current_pwm);
-        }
-        else if (IsPressed(PSB_PAD_LEFT)) {
-            _motor_a.motorGo(-_current_pwm);
-            _motor_b.motorGo(_current_pwm);
-        }
-        else if (IsPressed(PSB_PAD_RIGHT)) {
-            _motor_a.motorGo(_current_pwm);
-            _motor_b.motorGo(-_current_pwm);
-        }
+        // do something based on pressed button
+        if (_ps2_data->Button != 0x00) {
+            // drive with dpad
+            if (IsPressed(PSB_PAD_UP)) {
+                _motor_a.motorGo(_current_pwm);
+                _motor_b.motorGo(_current_pwm);
+            }
+            else if (IsPressed(PSB_PAD_DOWN)) {
+                _motor_a.motorGo(-_current_pwm);
+                _motor_b.motorGo(-_current_pwm);
+            }
+            else if (IsPressed(PSB_PAD_LEFT)) {
+                _motor_a.motorGo(-_current_pwm);
+                _motor_b.motorGo(_current_pwm);
+            }
+            else if (IsPressed(PSB_PAD_RIGHT)) {
+                _motor_a.motorGo(_current_pwm);
+                _motor_b.motorGo(-_current_pwm);
+            }
 
-        // stop when square pressed
-        if (IsPressed(PSB_SQUARE)) {
-            _motor_a.stopMotor();
-            _motor_b.stopMotor();
-        }
-
-        // increase/decrease pwm speed with L1/R1
-        if (IsPressed(PSB_L1) && _current_pwm >= _min_pwm) {
-            _current_pwm -= 5;
-            tone(BUZZER, 250, 50);
-        }
-        if (IsPressed(PSB_R1) && _current_pwm <= _max_pwm) {
-            _current_pwm += 5;
-            tone(BUZZER, 500, 50);
+            // stop when square pressed
+            if (IsPressed(PSB_SQUARE)) {
+                _motor_a.stopMotor();
+                _motor_b.stopMotor();
+            }
+            // decrease pwm speed with L1
+            else if (IsPressed(PSB_L1) && _current_pwm >= _min_pwm) {
+                _current_pwm -= 5;
+                tone(BUZZER, 250, 50);
+            }
+            // increase pwm speed with R1
+            else if (IsPressed(PSB_R1) && _current_pwm <= _max_pwm) {
+                _current_pwm += 5;
+                tone(BUZZER, 500, 50);
+            }
         }
     }
 }
