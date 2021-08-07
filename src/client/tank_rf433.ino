@@ -134,12 +134,12 @@ void loop() {
                 _motor_b.stopMotor();
             }
             // decrease pwm speed with L1
-            else if (IsPressed(PSB_L1) && _current_pwm >= _min_pwm) {
+            else if (IsPressed(PSB_L1) && _current_pwm > _min_pwm) {
                 _current_pwm -= 5;
                 tone(BUZZER, 250, 50);
             }
             // increase pwm speed with R1
-            else if (IsPressed(PSB_R1) && _current_pwm <= _max_pwm) {
+            else if (IsPressed(PSB_R1) && _current_pwm < _max_pwm) {
                 _current_pwm += 5;
                 tone(BUZZER, 500, 50);
             }
