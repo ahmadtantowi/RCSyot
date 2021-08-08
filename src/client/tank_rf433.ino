@@ -54,6 +54,8 @@ struct PS2_DATA {
 const int _min_pwm = 40;
 const int _max_pwm = 1023;
 const int _press_fx_duration = 25;
+const int _freq_fx_up = 500;
+const int _freq_fx_down = 250;
 
 RH_ASK _rf_driver(RF_SPEED, RF_RX, RF_TX, RF_PTT);
 MX1508 _motor_a(MOTOR_A1, MOTOR_A2, FAST_DECAY, PWM_2PIN);
@@ -138,12 +140,12 @@ void loop() {
             // decrease pwm speed with L1
             else if (IsPressed(PSB_L1) && _current_pwm > _min_pwm) {
                 _current_pwm -= 5;
-                tone(BUZZER, 250, _press_fx_duration);
+                tone(BUZZER, _freq_fx_down, _press_fx_duration);
             }
             // increase pwm speed with R1
             else if (IsPressed(PSB_R1) && _current_pwm < _max_pwm) {
                 _current_pwm += 5;
-                tone(BUZZER, 500, _press_fx_duration);
+                tone(BUZZER, _freq_fx_up, _press_fx_duration);
             }
         }
     }
