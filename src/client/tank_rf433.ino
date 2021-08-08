@@ -63,6 +63,7 @@ MX1508 _motor_b(MOTOR_B1, MOTOR_B2, FAST_DECAY, PWM_2PIN);
 
 PS2_DATA *_ps2_data;
 int _current_pwm = 100;
+boolean _en_turn_rotate = false;
 
 void setup() {
 #ifdef COM_DEBUG
@@ -124,18 +125,27 @@ void loop() {
                 _motor_b.motorGo(-_current_pwm);
             }
             else if (IsPressed(PSB_PAD_LEFT)) {
-                _motor_a.motorGo(-_current_pwm);
                 _motor_b.motorGo(_current_pwm);
+                if (_en_turn_rotate) {
+                _motor_a.motorGo(-_current_pwm);
+                }
             }
             else if (IsPressed(PSB_PAD_RIGHT)) {
                 _motor_a.motorGo(_current_pwm);
+                if (_en_turn_rotate) {
                 _motor_b.motorGo(-_current_pwm);
+                }
             }
 
             // stop when square pressed
             if (IsPressed(PSB_SQUARE)) {
                 _motor_a.stopMotor();
                 _motor_b.stopMotor();
+            }
+            // enable/disable turn with rotatation (both motor turn opposite)
+            else if (IsPressed(PSB_CIRCLE)) {
+                _en_turn_rotate = !_en_turn_rotate;
+                tone(BUZZER, _en_turn_rotate ? _freq_fx_up : _freq_fx_down, _press_fx_duration);
             }
             // decrease pwm speed with L1
             else if (IsPressed(PSB_L1) && _current_pwm > _min_pwm) {
