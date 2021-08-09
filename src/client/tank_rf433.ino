@@ -1,6 +1,7 @@
 #include <RH_ASK.h>
 #include <SPI.h>
 #include <MX1508.h>
+#include <melody.h>
 
 // uncomment to enable print out debug to uart
 // #define COM_DEBUG
@@ -60,6 +61,7 @@ const int _freq_fx_down = 250;
 RH_ASK _rf_driver(RF_SPEED, RF_RX, RF_TX, RF_PTT);
 MX1508 _motor_a(MOTOR_A1, MOTOR_A2, FAST_DECAY, PWM_2PIN);
 MX1508 _motor_b(MOTOR_B1, MOTOR_B2, FAST_DECAY, PWM_2PIN);
+melody _melody(BUZZER);
 
 PS2_DATA *_ps2_data;
 int _current_pwm = 100;
@@ -146,6 +148,7 @@ void loop() {
             else if (IsPressed(PSB_CIRCLE)) {
                 _en_turn_rotate = !_en_turn_rotate;
                 tone(BUZZER, _en_turn_rotate ? _freq_fx_up : _freq_fx_down, _press_fx_duration);
+                delay(_press_fx_duration * 2);
             }
             // decrease pwm speed with L1
             else if (IsPressed(PSB_L1) && _current_pwm > _min_pwm) {
@@ -156,6 +159,23 @@ void loop() {
             else if (IsPressed(PSB_R1) && _current_pwm < _max_pwm) {
                 _current_pwm += 5;
                 tone(BUZZER, _freq_fx_up, _press_fx_duration);
+            }
+
+            // play melody when start button pressed
+            if (IsPressed(PSB_START)) {
+                _motor_a.stopMotor();
+                _motor_b.stopMotor();
+                _melody.play();
+            }
+            // change melody playlist when select button pressed
+            else if (IsPressed(PSB_SELECT)) {
+                int playlist = _melody.next();
+                for (size_t i = 0; i < playlist; i++) {
+                    tone(BUZZER, _freq_fx_up, _press_fx_duration * 2);
+                    delay(_press_fx_duration * 4);
+                }
+                tone(BUZZER, _freq_fx_down, _press_fx_duration);
+                delay(_press_fx_duration * 20);
             }
         }
     }
