@@ -95,4 +95,16 @@ The Client (Tank) unit typically uses an Arduino Nano/Uno, an RF433MHz Receiver 
         *   One terminal to Arduino Digital Pin 2 (D2).
         *   Other terminal to Arduino GND.
 
+## Project Assets
 
+Here are some visual assets related to the project:
+
+### Remote Control and Tank Overview
+
+![Remote Control and Tank](/RCSyot/assets/remote + tank.jpeg)
+
+### Tank Driving Demonstration
+
+A video demonstrating the tank in action:
+
+[Drive Demonstration Video](/RCSyot/assets/drive.mp4)
