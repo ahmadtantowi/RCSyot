@@ -101,10 +101,10 @@ Here are some visual assets related to the project:
 
 ### Remote Control and Tank Overview
 
-![Remote Control and Tank](/RCSyot/assets/remote + tank.jpeg)
+![Remote Control and Tank](/assets/remote_plus_tank.jpeg)
 
 ### Tank Driving Demonstration
 
 A video demonstrating the tank in action:
 
-[Drive Demonstration Video](/RCSyot/assets/drive.mp4)
+[Drive Demonstration Video](/assets/drive.mp4)
