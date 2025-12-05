@@ -40,6 +40,47 @@ The remote control part of this project is implemented in the `RCSyot/src/remote
 *   **Microcontroller:** An Arduino board (e.g., Arduino Uno, Nano) to read inputs and process commands.
 *   **RF433 Transmitter:** To send encoded control signals wirelessly.
 
+### PS2 Controller Button Functions
+
+The remote control uses a PS2-style joystick. Here's a representation of the buttons and their assigned functions in the client (tank) firmware:
+
+```text
+        +--------------------------------------------------------------+
+        |                                                              |
+        |  L1 (Decrease Speed)            R1 (Increase Speed)          |
+        |  L2                             R2                           |
+        |                                                              |
+        |       (SELECT)                          (START)              |
+        |   (Change Melody)                    (Play Melody)           |
+        |                                                              |
+        |         _PAD_UP                 _TRIANGLE (Green Button)     |
+        |            ^                    _SQUARE (Stop Motors)        |
+        | _PAD_LEFT < > _PAD_RIGHT        _CIRCLE (Toggle Turn/Rotate) |
+        |            v                    _CROSS (Red Button)          |
+        |        _PAD_DOWN                                             |
+        |                                                              |
+        | Left Analog Stick               Right Analog Stick           |
+        | (Left Motor Control)            (Right Motor Control)        |
+        |                                                              |
+        +--------------------------------------------------------------+
+```
+
+**Button Assignments:**
+
+*   **Left Analog Stick (Left_Y):** Controls the left motor (forward/backward movement).
+*   **Right Analog Stick (Right_Y):** Controls the right motor (forward/backward movement).
+*   **DPAD Up (`PSB_PAD_UP`):** Move tank forward.
+*   **DPAD Down (`PSB_PAD_DOWN`):** Move tank backward.
+*   **DPAD Left (`PSB_PAD_LEFT`):** Turn tank left. If rotation mode is enabled (see `PSB_CIRCLE`), the left motor moves backward while the right motor moves forward.
+*   **DPAD Right (`PSB_PAD_RIGHT`):** Turn tank right. If rotation mode is enabled (see `PSB_CIRCLE`), the right motor moves backward while the left motor moves forward.
+*   **L1 (`PSB_L1`):** Decrease current PWM speed for motors.
+*   **R1 (`PSB_R1`):** Increase current PWM speed for motors.
+*   **Square (`PSB_SQUARE`):** Immediately stop both motors.
+*   **Circle (`PSB_CIRCLE`):** Toggles the "turn with rotation" mode. When enabled, turning left/right with the D-pad will make the motors spin in opposite directions for tighter turns. A short buzzer sound indicates the state change.
+*   **Start (`PSB_START`):** Plays the currently selected melody.
+*   **Select (`PSB_SELECT`):** Changes to the next melody in the playlist. The number of short buzzer sounds indicates the new playlist number.
+*   **L2, R2, L3, R3, Triangle, Cross:** Currently not assigned specific functions in the `tank_rf433.ino` sketch.
+
 ## Client (Tank)
 
 The client part, specifically for a tank, is located in the `RCSyot/src/client` directory, with `tank_rf433.ino` as its main sketch. This component usually comprises:
